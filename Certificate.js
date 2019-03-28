@@ -5,6 +5,7 @@ var x509 = pki.x509 = {};
 var pkcs6 = pki.pkcs6 = {};
 var pkcs7 = pki.pkcs7 = {};
 var oids = pki.oids = {};
+var pem = pki.pem = {};
 
 x509.CERT_VERSION_V1 = 0;
 x509.CERT_VERSION_V2 = 1;
@@ -13,6 +14,13 @@ x509.CERT_VERSION_V3 = 2;
 oids = {
     PKCS7_DATA: '1.2.840.113549.1.7.1',
     PKCS7_SIGNED_DATA: '1.2.840.113549.1.7.2',
+};
+
+pem.Type = {
+    PKCS7: 'PKCS7',
+    X509: 'CERTIFICATE',
+    PUBLIC_KEY: 'PUBLIC KEY',
+    PRIVATE_KEY: 'RSA PRIVATE KEY'
 };
 
 x509.AlgorithmIdentifier = (function() {
@@ -837,9 +845,49 @@ pkcs7.ContentInfo = (function() {
     return ContentInfo;
 })();
 
+/**
+ * 从pem中获取证书内容
+ */
+pem.getContent = function(pem) {
+    let g = /^-----BEGIN .*-----((.|\s)*)-----END .*-----$/;
+    let m = g.exec(pem.trim());
+    let r = m && m.length >= 2 ? m[1] : pem;
+    return r ? r.replace(/\s/g, '') : r;
+};
+
+/**
+ * 将证书内容包装成pem格式
+ * @param type pem类型，见pem.Type
+ */
+pem.wrapContent = function(content, type) {
+    // 对本身是pem格式的不做处理
+    let g = /^-----BEGIN .*-----((.|\s)*)-----END .*-----$/;
+    let m = g.exec(content.trim());
+    if (m) return content;
+    // 非pem格式的处理一下
+    return `-----BEGIN ${type}-----\r\n${content.trim()}\r\n-----END ${type}-----\r\n`;
+};
+
 // Node.js check
 if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
     module.exports = pki;
+    // 仅在nodejs中使用
+    x509.fromPem = function(pem) {
+        var cert = pki.pem.getContent(pem);
+        var certBin = new Buffer(cert, 'base64');
+        var ba = new ByteArray(certBin);
+        var pkiCert = new x509.Certificate();
+        pkiCert.decode(ba);
+        return pkiCert;
+    };
+    pkcs7.fromPem = function(pem) {
+        var cert = pki.pem.getContent(pem);
+        var certBin = new Buffer(cert, 'base64');
+        var ba = new ByteArray(certBin);
+        var p7 = new pkcs7.ContentInfo();
+        p7.decode(ba);
+        return p7;
+    };
 }
 
 // amd check
