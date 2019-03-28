@@ -1,0 +1,31 @@
+{
+  "name": "pp-certificate",
+  "version": "1.0.1",
+  "description": "A very simple script for encoding and decoding pkcs7/pkcs6/x509 certification in Javascript with node.js and web browser support",
+  "main": "Certificate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erisenxu/pp-certificate.git"
+  },
+  "keywords": [
+    "x.509",
+    "pkcs6",
+    "pkcs7",
+    "certificate",
+    "asn1"
+  ],
+  "author": "erisenxu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/erisenxu/pp-certificate/issues"
+  },
+  "homepage": "https://github.com/erisenxu/pp-certificate#readme",
+  "dependencies": {
+    "big-integer": "^1.6.36",
+    "moment": "^2.24.0",
+    "pp-bytearray": "^1.0.4"
+  }
+}
