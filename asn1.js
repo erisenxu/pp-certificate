@@ -469,6 +469,16 @@ der.Primitive = (function() {
         return {tag: this.tag.toJson(), value: this.value, /*hex: bigInt(this.value).toString(16)*/};
     };
 
+    Primitive.prototype.toBytes = function() {
+        var ba = new ByteArray();
+        this.encode(ba);
+        return ba.getBytes();
+    };
+
+    Primitive.prototype.toString = function(encoding='base64') {
+        return new Buffer(this.toBytes()).toString(encoding);
+    };
+
     return Primitive;
 })();
 
@@ -576,6 +586,16 @@ der.Sequence = (function() {
         });
 
         return {tag: this.tag.toJson(), sequence};
+    };
+
+    Sequence.prototype.toBytes = function() {
+        var ba = new ByteArray();
+        this.encode(ba);
+        return ba.getBytes();
+    };
+
+    Sequence.prototype.toString = function(encoding='base64') {
+        return new Buffer(this.toBytes()).toString(encoding);
     };
 
     return Sequence;
@@ -881,6 +901,16 @@ der.Set = (function() {
         });
 
         return o;
+    };
+
+    Set.prototype.toBytes = function() {
+        var ba = new ByteArray();
+        this.encode(ba);
+        return ba.getBytes();
+    };
+
+    Set.prototype.toString = function(encoding='base64') {
+        return new Buffer(this.toBytes()).toString(encoding);
     };
 
     return Set;
