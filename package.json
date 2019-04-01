@@ -1,6 +1,6 @@
 {
   "name": "pp-certificate",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A very simple script for encoding and decoding pkcs7/pkcs6/x509 certification in Javascript with node.js and web browser support",
   "main": "Certificate.js",
   "scripts": {

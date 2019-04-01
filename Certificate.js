@@ -11,22 +11,24 @@ x509.CERT_VERSION_V1 = 0;
 x509.CERT_VERSION_V2 = 1;
 x509.CERT_VERSION_V3 = 2;
 
-oids = {
-    PKCS7_DATA: '1.2.840.113549.1.7.1',
-    PKCS7_SIGNED_DATA: '1.2.840.113549.1.7.2',
-    digest: {
-        '1.3.14.3.2.26': 'sha1',
-        '2.16.840.1.101.3.4.2.1': 'sha256',
-        '2.16.840.1.101.3.4.2.2': 'sha384',
-        '2.16.840.1.101.3.4.2.3': 'sha512',
-        '2.16.840.1.101.3.4.2.4': 'sha224',
-        '1.2.840.113549.2.5': 'md5'
-    },
-    attribute: {
-        contentType: '1.2.840.113549.1.9.3',
-        messageDigest: '1.2.840.113549.1.9.4',
-        signingTime: '1.2.840.113549.1.9.5'
-    }
+oids.digest = {
+    '1.3.14.3.2.26': 'sha1',
+    '2.16.840.1.101.3.4.2.1': 'sha256',
+    '2.16.840.1.101.3.4.2.2': 'sha384',
+    '2.16.840.1.101.3.4.2.3': 'sha512',
+    '2.16.840.1.101.3.4.2.4': 'sha224',
+    '1.2.840.113549.2.5': 'md5'
+};
+
+oids.attribute = {
+    contentType: '1.2.840.113549.1.9.3',
+    messageDigest: '1.2.840.113549.1.9.4',
+    signingTime: '1.2.840.113549.1.9.5'
+};
+
+oids.contentType = {
+    data: '1.2.840.113549.1.7.1',
+    signedData: '1.2.840.113549.1.7.2'
 };
 
 pem.Type = {
@@ -778,7 +780,7 @@ pkcs7.ContentInfo = (function() {
 
     ContentInfo.prototype.getContent = function() {
         switch (this.contentType.value) {
-            case oids.PKCS7_DATA: {
+            case oids.contentType.data: {
                 this.data = this.data || new asn1.der.Primitive({
                     tag: {
                         class: asn1.der.CLASS_UNIVERSAL,
@@ -795,7 +797,7 @@ pkcs7.ContentInfo = (function() {
                 });
                 return this.data;
             }
-            case oids.PKCS7_SIGNED_DATA: {
+            case oids.contentType.signedData: {
                 this.signedData = this.signedData || new pkcs7.SignedData({
                     tag: {
                         class: asn1.der.CLASS_UNIVERSAL,
@@ -818,10 +820,10 @@ pkcs7.ContentInfo = (function() {
 
     ContentInfo.prototype.contentToJson = function() {
         switch (this.contentType.value) {
-            case oids.PKCS7_DATA: {
+            case oids.contentType.data: {
                 return this.data ? ByteArray.fromUTF8(this.data.value) : '';
             }
-            case oids.PKCS7_SIGNED_DATA: {
+            case oids.contentType.signedData: {
                 return this.signedData ? this.signedData.toJson() : '';
             }
         }
