@@ -31,6 +31,16 @@ oids.contentType = {
     signedData: '1.2.840.113549.1.7.2'
 };
 
+oids.subject = {
+    commonName: '2.5.4.3', // 简称CN
+    serialName: '2.5.4.5',
+    countryName: '2.5.4.6',
+    localityName: '2.5.4.7',
+    stateOrProvinceName: '2.5.4.8',
+    organizationName: '2.5.4.10', // 简称O
+    organizationalUnitName: '2.5.4.11'
+};
+
 pem.Type = {
     PKCS7: 'PKCS7',
     X509: 'CERTIFICATE',
