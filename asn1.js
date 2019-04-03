@@ -100,7 +100,8 @@ der.oid.fromBytes = function(bytes) {
 };
 
 der.toHex = function(v) {
-    return (v instanceof Array) ? bigInt.fromArray(v, 256).toString(16) : bigInt(v).toString(16);
+    var h = (v instanceof Array) ? bigInt.fromArray(v, 256).toString(16) : bigInt(v).toString(16);
+    return h.length%2 === 0 ? h : '0' + h;
 }
 
 der.updateUtcTime = function(primitive) {

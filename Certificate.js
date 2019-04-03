@@ -4,6 +4,7 @@ var pki = {};
 var x509 = pki.x509 = {};
 var pkcs6 = pki.pkcs6 = {};
 var pkcs7 = pki.pkcs7 = {};
+var pkcs8 = pki.pkcs8 = {};
 var oids = pki.oids = {};
 var pem = pki.pem = {};
 
@@ -778,7 +779,7 @@ pkcs7.ContentInfo = (function() {
         asn1.der.Constructive.apply(this, arguments);
 
         this.contentType = new asn1.der.Primitive({
-            tag: asn1.der.TAG_VALUE_OBJECT_DESCRIPTION
+            tag: asn1.der.TAG_VALUE_OBJECT_IDENTIFIER
         });
 
         // 加入到elements中
@@ -868,6 +869,47 @@ pkcs7.ContentInfo = (function() {
     };
 
     return ContentInfo;
+})();
+
+pkcs8.PrivateKeyInfo = (function() {
+    "use strict";
+
+    function PrivateKeyInfo() {
+        asn1.der.Constructive.apply(this, arguments);
+
+        this.version = new asn1.der.Primitive({
+            tag: asn1.der.TAG_VALUE_INTEGER
+        });
+        this.privateKeyAlgorithm = new x509.AlgorithmIdentifier();
+        this.privateKey = new asn1.der.Primitive({
+            tag: asn1.der.TAG_VALUE_BIT_STRING
+        });
+        this.attributes = new asn1.der.Set({
+            elementCreator: function() {return new pkcs6.Attribute();},
+            tag: {
+                class: asn1.der.CLASS_CONTEXT_SPECIFIC,
+                type: asn1.der.TYPE_CONSTRUCTED,
+                value: asn1.der.TAG_VALUE_SET,
+                tagValue: 0,
+                tagType: asn1.der.TAG_TYPE_IMPLICIT
+            },
+            optional: true
+        });
+
+        // 加入到elements中
+        this.elements.push(this.version);
+        this.elements.push(this.privateKeyAlgorithm);
+        this.elements.push(this.privateKey);
+        this.elements.push(this.attributes);
+    }
+
+    utils.extend(PrivateKeyInfo, asn1.der.Constructive);
+
+    PrivateKeyInfo.prototype.toJson = function() {
+        return {version: this.version, privateKeyAlgorithm: this.privateKeyAlgorithm.toJson(), privateKey: asn1.der.toHex(this.privateKey.value), attributes: this.attributes.toJson()};
+    };
+
+    return PrivateKeyInfo;
 })();
 
 /**
