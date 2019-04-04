@@ -882,7 +882,7 @@ pkcs8.PrivateKeyInfo = (function() {
         });
         this.privateKeyAlgorithm = new x509.AlgorithmIdentifier();
         this.privateKey = new asn1.der.Primitive({
-            tag: asn1.der.TAG_VALUE_BIT_STRING
+            tag: asn1.der.TAG_VALUE_OCTET_STRING
         });
         this.attributes = new asn1.der.Set({
             elementCreator: function() {return new pkcs6.Attribute();},
